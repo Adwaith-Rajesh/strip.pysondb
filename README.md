@@ -1,6 +1,6 @@
 # strip.pysondb
 
-A strip down version of [pysondb](https://github.com/fredysomy/pysonDB) by [Fredy Somy](https://github.com/fredysomy).
+A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [Fredy Somy](https://github.com/fredysomy).
 
 ## Features.
  - No third party packages needed
