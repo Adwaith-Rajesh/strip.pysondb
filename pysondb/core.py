@@ -32,7 +32,7 @@ class DB:
         return pformat(self._db, sort_dicts=False, width=80)
 
     def __len__(self) -> int:
-        """Get the count of number of entries in the DB"""
+        """Get the number of entries in the DB"""
         return len(self._db)
 
     def add(self, data: Dict[str, Any]) -> str:
@@ -68,13 +68,24 @@ class DB:
             self._dump_db_to_json()
 
     def get_by_id(self, _id: str) -> Union[None, Dict[str, Any]]:
-        pass
+        """Get the value from the DB based on the _id"""
+        _id = str(_id)
+        if _id in self._db:
+            return self._db[_id]
+
+        return None
 
     def get_by_query(self, query: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
-        pass
+        """Get the values from the DB based on the query conditions"""
+        return {
+            i: x
+            for i, x in self._db.items()
+            if all(k in x and x[k] == v for k, v in query.items())
+        }
 
     def get_all(self) -> Dict[str, Dict[str, Any]]:
-        pass
+        """Returns the entire DB"""
+        return self._db.copy()
 
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
         pass
