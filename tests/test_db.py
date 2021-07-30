@@ -85,7 +85,7 @@ def test_get_by_query():
 
 def test_delete_by_id():
     db = DB('test.json', in_memory=True)
-    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+    data = [{"name": f"name{i}", "age": i} for i in range(3)]
 
     id1 = db.add(data[0])
     _ = db.add(data[1])
@@ -98,7 +98,7 @@ def test_delete_by_id():
 
 def test_delete_by_query():
     db = DB('test.json', in_memory=True)
-    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+    data = [{"name": f"name{i}", "age": i} for i in range(3)]
 
     id1 = db.add(data[0])
     _ = db.add(data[1])
@@ -112,9 +112,37 @@ def test_delete_by_query():
 
 def test_delete_all():
     db = DB('test.json', in_memory=True)
-    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+    data = [{"name": f"name{i}", "age": i} for i in range(3)]
     db.add_many(data)
 
     assert len(db._db) == 3
     db.delete_all()
     assert len(db._db) == 0
+
+
+def test_update_by_id():
+    db = DB('test.json', in_memory=True)
+    data = [{"name": f"name{i}", "age": i} for i in range(3)]
+
+    id1 = db.add(data[0])
+    id2 = db.add(data[1])
+    _ = db.add(data[2])
+
+    db.update_by_id(id1, {"name": "changed"})
+    db.update_by_id(id2, {"name": "changed2", "age": 3})
+
+    assert db.get_by_id(id1) == {"name": "changed", "age": 0}
+    assert db.get_by_id(id2) == {"name": "changed2", "age": 3}
+
+
+def test_update_by_query():
+    db = DB('test.json', in_memory=True)
+    data = [{"name": f"name{i}", "age": i} for i in range(3)]
+
+    id1 = db.add(data[0])
+    _ = db.add(data[1])
+    _ = db.add(data[2])
+
+    db.update_by_query({"name": "name0"}, {"name": "changed"})
+
+    assert db.get_by_id(id1) == {"name": "changed", "age": 0}

@@ -1,4 +1,5 @@
 import json
+import typing
 from pathlib import Path
 from pprint import pformat
 from typing import Any
@@ -27,9 +28,13 @@ class DB:
             create_db(self._name)
             self._load_json_db()
 
+    @typing.no_type_check
     def __repr__(self) -> str:
         """A pretty format of the DB"""
-        return pformat(self._db, sort_dicts=False, width=80)
+        try:
+            return pformat(self._db, sort_dicts=False, width=80)
+        except TypeError:
+            return pformat(self._db)
 
     def __len__(self) -> int:
         """Get the number of entries in the DB"""
@@ -88,10 +93,37 @@ class DB:
         return self._db.copy()
 
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
-        pass
+        if self._db:
+            if all(i in list(self._db.values())[0] for i in data):
+                if _id in self._db:
+                    self._db[_id].update(data)
+
+                    self._dump_db_to_json()
+
+            else:
+                raise KeyError(
+                    "Some keys provided in the update data does not match the keys in the DB"
+                )
 
     def update_by_query(self, query: Dict[str, Any], new_data: Dict[str, Any]) -> List[str]:
-        pass
+        if self._db:
+            if all(i in list(self._db.values())[0] for i in query) and all(
+                i in list(self._db.values())[0] for i in new_data
+            ):
+                ids = list(
+                    self.get_by_query(query)
+                )  # get the ids of all the values that need to updated
+                for i in ids:
+                    self._db[i].update(new_data)
+
+                self._dump_db_to_json()
+                return ids
+
+            else:
+                raise KeyError(
+                    "The key in the query or the key in the new_data does not match the keys in the DB"
+                )
+        return []
 
     def delete_by_id(self, _id: str) -> None:
         if _id in self._db:
