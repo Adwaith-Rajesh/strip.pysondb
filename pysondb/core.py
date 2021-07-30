@@ -90,14 +90,26 @@ class DB:
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
         pass
 
-    def delete_by_id(self, _id: str) -> None:
+    def update_by_query(self, query: Dict[str, Any], new_data: Dict[str, Any]) -> List[str]:
         pass
+
+    def delete_by_id(self, _id: str) -> None:
+        if _id in self._db:
+            del self._db[_id]
+        self._dump_db_to_json()
 
     def delete_all(self) -> None:
-        pass
+        self._db.clear()
+        self._dump_db_to_json()
 
-    def delete_by_query(self) -> List[str]:
-        pass
+    def delete_by_query(self, query: Dict[str, Any]) -> List[str]:
+        _ids = list(self.get_by_query(query).keys())
+        for _id in _ids:
+            self.delete_by_id(_id)
+        self._dump_db_to_json()
+        return _ids
+
+    ###############################################################################################
 
     def _load_json_db(self) -> None:
         """Loads the JSON file if it exists"""

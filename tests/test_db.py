@@ -81,3 +81,40 @@ def test_get_by_query():
         {"name": "test", "age": 1}).values()) == [data[0]]
 
     assert db.get_by_query({"main": "test"}) == {}
+
+
+def test_delete_by_id():
+    db = DB('test.json', in_memory=True)
+    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+
+    id1 = db.add(data[0])
+    _ = db.add(data[1])
+    _ = db.add(data[2])
+
+    assert len(db._db) == 3
+    db.delete_by_id(id1)
+    assert len(db._db) == 2
+
+
+def test_delete_by_query():
+    db = DB('test.json', in_memory=True)
+    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+
+    id1 = db.add(data[0])
+    _ = db.add(data[1])
+    _ = db.add(data[2])
+
+    assert len(db._db) == 3
+    ids = db.delete_by_query({"age": 0})
+    assert len(db._db) == 2
+    assert ids == [id1]
+
+
+def test_delete_all():
+    db = DB('test.json', in_memory=True)
+    data = [{"name": f"name{1}", "age": i} for i in range(3)]
+    db.add_many(data)
+
+    assert len(db._db) == 3
+    db.delete_all()
+    assert len(db._db) == 0
