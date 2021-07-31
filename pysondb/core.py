@@ -93,6 +93,7 @@ class DB:
         return self._db.copy()
 
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
+        """Update a value by it id"""
         if self._db:
             if all(i in list(self._db.values())[0] for i in data):
                 if _id in self._db:
@@ -106,6 +107,7 @@ class DB:
                 )
 
     def update_by_query(self, query: Dict[str, Any], new_data: Dict[str, Any]) -> List[str]:
+        """Update values based on the query"""
         if self._db:
             if all(i in list(self._db.values())[0] for i in query) and all(
                 i in list(self._db.values())[0] for i in new_data
@@ -126,20 +128,33 @@ class DB:
         return []
 
     def delete_by_id(self, _id: str) -> None:
+        """Delete values based in id"""
         if _id in self._db:
             del self._db[_id]
         self._dump_db_to_json()
 
     def delete_all(self) -> None:
+        """Delete all the values from the DB"""
         self._db.clear()
         self._dump_db_to_json()
 
     def delete_by_query(self, query: Dict[str, Any]) -> List[str]:
+        """Delete values based on a query"""
         _ids = list(self.get_by_query(query).keys())
         for _id in _ids:
             self.delete_by_id(_id)
         self._dump_db_to_json()
         return _ids
+
+    def force_save(self) -> None:
+        """Forcefully save the DB as a JSON file
+        usefull if the DB is in memory.
+        """
+
+        if self._in_memory:
+            self._in_memory = False
+            self._dump_db_to_json()
+            self._in_memory = True
 
     ###############################################################################################
 
