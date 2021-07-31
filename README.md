@@ -19,6 +19,8 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 
 ## Installation
 
+- ### Delete the original pysondb before installing this version. (Might cause conflicts)
+
 - ### From Pypi
   ```commandline
   pip3 install strip.pysondb
