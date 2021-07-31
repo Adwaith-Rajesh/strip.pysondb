@@ -1,6 +1,14 @@
+import os
+
 import pytest
 
 from pysondb.core import DB
+
+
+@pytest.fixture
+def rm_file():
+    yield
+    os.remove("pysondb-test.json")
 
 
 def test_add():
@@ -146,3 +154,14 @@ def test_update_by_query():
     db.update_by_query({"name": "name0"}, {"name": "changed"})
 
     assert db.get_by_id(id1) == {"name": "changed", "age": 0}
+
+
+@pytest.mark.usefixtures("rm_file")
+def test_force_save():
+
+    db = DB("pysondb-test.json", in_memory=True)
+    db.add({"name": "test"})
+
+    assert os.path.exists("./pysondb-test.json") is False
+    db.force_save()
+    assert os.path.exists("./pysondb-test.json")

@@ -313,4 +313,18 @@ from pysondb import DB
 db = DB("test.json", in_memory=True)  # This will not store any of the data or the changes in a file
 ```
 
+## DB.force_save
+
+- When the DB is an in memory DB, the changes are not saved to a file. If you want to save them to a file then use `DB.force_save`
+
+```python
+from pysondb import DB
+
+db = DB("test.json", in_memory=True)
+db.add({"name": "test", "age": 2})  # This will not cause any change in the "test.json" file
+
+# To save the changes in ".json" file use
+db.force_save()
+```
+
 ---
