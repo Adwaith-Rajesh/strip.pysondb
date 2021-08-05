@@ -1,8 +1,8 @@
 import json
 import typing
-import uuid
 from pathlib import Path
 from pprint import pformat
+from random import randint
 from typing import Any
 from typing import Dict
 from typing import List
@@ -130,12 +130,12 @@ class DB:
     ###############################################################################################
 
     def _generate_id(self) -> str:
-        _id = str(uuid.uuid4().int)[:16]
+        _id = randint(int("1" "" * 19), int("9" * 20))
 
         while _id in self._db:
-            _id = str(uuid.uuid4().int)[:16]
+            _id = randint(int("1" "" * 19), int("9" * 20))
 
-        return _id
+        return str(_id)
 
     def _load_json_db(self, filename: str) -> None:
         """Loads the JSON file if it exists"""
