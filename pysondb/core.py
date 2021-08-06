@@ -142,7 +142,12 @@ class DB:
         if Path(filename).is_file():
             try:
                 with open(filename, "r") as f:
-                    self._db = json.load(f)
+                    data = json.load(f)
+                    for val in data.values():
+                        self._verify_data(val)
+
+                    self._db = data.copy()
+
             except json.decoder.JSONDecodeError:
                 self._db = {}
 
