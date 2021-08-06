@@ -64,7 +64,7 @@ print(db.get_by_id(id1))
 
     {'name': 'ad', 'age': 2}
 
-## `DB.get_by_query(query: dict[str, Any]) -> dict[str, Dict[str, Ant]]:`
+## `DB.get_by_query(query: dict[str, Any]) -> dict[str, Dict[str, Any]]:`
 
 ### The `DB.get_by_query` method takes in the query as a dict and returns all the values that matches all the condition in the query
 
