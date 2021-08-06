@@ -15,6 +15,14 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 - Use of [python naming conventions](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names) in functions and classes.
 - Just the code required to perform CRUD operation on JSON DB.
 
+## Note
+
+Even though it's called a stripped-down version, there are some huge differences in the way this package works.
+
+- The data is not saved to file instantly, instead a methods needs to be called in order to do that.
+- A new methods called `pop` is added.
+- The user is supposed to pass the keys / column name for the DB during initialization of the `DB` class.
+
 ---
 
 ## Installation
@@ -39,7 +47,7 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
   ```python
   from pysondb import DB
 
-  db = DB("test.json")
+  db = DB(keys = ["name", "age"])
   db.add({
       "name": "name1",
       "age": 1
