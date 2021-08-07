@@ -33,10 +33,6 @@ Even though it's called a stripped-down version, there are some huge differences
   ```commandline
   pip3 install strip.pysondb
   ```
-- ### Get the latest non-released version
-  ```commandline
-  pip3 install git+https://github.com/Adwaith-Rajesh/strip.pysondb.git@master
-  ```
 
 ---
 
