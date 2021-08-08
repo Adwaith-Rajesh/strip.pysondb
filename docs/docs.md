@@ -319,3 +319,73 @@ print(db)
     {'56391508197704412755': {'name': 'ad', 'age': 1, 'place': 'canada'},
      '34033319050367693482': {'name': 'fred', 'age': 2, 'place': 'canada'},
      '95561529227556367819': {'name': 'dev', 'age': 1, 'place': 'texas'}}
+
+## Get the first 'n' values from the DB
+
+### Use `DB.values(count: int = 5, last: bool = False) -> dict[str, dict[str, Any]]:`
+
+```python
+from pysondb import DB
+
+db = DB(keys = ["name", "age"])
+
+for i in range(10):
+    db.add({"name": f"name{i}", "age": i})
+
+print(db)
+print()
+print(db.values())  # get the  first 5 values
+print()
+print(db.values(count=3, last=True))  # get the last 3 values from the DB
+```
+
+    {'25450151252074394659': {'name': 'name0', 'age': 0},
+     '90464346568236546790': {'name': 'name1', 'age': 1},
+     '31876465304015561689': {'name': 'name2', 'age': 2},
+     '56199458902278048668': {'name': 'name3', 'age': 3},
+     '35022607077169707483': {'name': 'name4', 'age': 4},
+     '24651900705643162239': {'name': 'name5', 'age': 5},
+     '62441390413840228628': {'name': 'name6', 'age': 6},
+     '51052354574257995704': {'name': 'name7', 'age': 7},
+     '46451612512778442887': {'name': 'name8', 'age': 8},
+     '70185518417588750000': {'name': 'name9', 'age': 9}}
+
+    {'25450151252074394659': {'name': 'name0', 'age': 0}, '90464346568236546790': {'name': 'name1', 'age': 1}, '31876465304015561689': {'name': 'name2', 'age': 2}, '56199458902278048668': {'name': 'name3', 'age': 3}, '35022607077169707483': {'name': 'name4', 'age': 4}}
+
+    {'51052354574257995704': {'name': 'name7', 'age': 7}, '46451612512778442887': {'name': 'name8', 'age': 8}, '70185518417588750000': {'name': 'name9', 'age': 9}}
+
+## Using a custom id generator
+
+### Use `DB.set_id_generator(func: Callable[[], str]) -> None:`
+
+#### In this example we will be making a simple id generating function that gives incremental ids
+
+```python
+from pysondb import DB
+
+
+id_count = 0
+def get_id() -> str:
+    global id_count
+    id_count += 1
+    return str(id_count)
+
+db = DB(keys = ["name", "age"])
+db.set_id_generator(get_id)
+
+for i in range(10):
+    db.add({"name": f"name{i}", "age": i})
+
+print(db)
+```
+
+    {'1': {'name': 'name0', 'age': 0},
+     '2': {'name': 'name1', 'age': 1},
+     '3': {'name': 'name2', 'age': 2},
+     '4': {'name': 'name3', 'age': 3},
+     '5': {'name': 'name4', 'age': 4},
+     '6': {'name': 'name5', 'age': 5},
+     '7': {'name': 'name6', 'age': 6},
+     '8': {'name': 'name7', 'age': 7},
+     '9': {'name': 'name8', 'age': 8},
+     '10': {'name': 'name9', 'age': 9}}
