@@ -44,6 +44,9 @@ class DB:
     def set_id_generator(self, func: Callable[[], str]) -> None:
         self._id_generator = func
 
+    def id_exists(self, _id: str) -> bool:
+        return _id in self._db
+
     def add(self, data: Dict[str, Any]) -> str:
         """Add a value to the DB"""
 
