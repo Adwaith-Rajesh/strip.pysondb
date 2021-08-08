@@ -24,11 +24,12 @@ Even though it's called a stripped-down version, there are some huge differences
 - The data is not saved to file instantly, instead a methods needs to be called in order to do that.
 - The user is supposed to pass the keys / column name for the DB during initialization of the `DB` class.
 - Some of the new methods that are not derived from PysonDB are,
-  - `pop`
-  - `commit`
-  - `load`
-  - `values`
-  - `set_id_generator`
+  - [`pop`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#dbpop_id-str---dictstr-any--none)
+  - [`commit`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#saving-to-a-file)
+  - [`load`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#load-values-from-a-file)
+  - [`values`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#get-the-first-n-values-from-the-db)
+  - [`set_id_generator`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#using-a-custom-id-generator)
+  - [`id_exists`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#check-whether-an-id-exists-in-the-db)
 
 ---
 
