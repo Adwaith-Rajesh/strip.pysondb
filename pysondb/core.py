@@ -4,6 +4,7 @@ from pathlib import Path
 from pprint import pformat
 from random import randint
 from typing import Any
+from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Union
@@ -18,6 +19,7 @@ class DB:
         self._db: Dict[str, Dict[str, Any]] = {}
         self._verify = verify_data
         self._keys = sorted(keys)
+        self._id_generator = self._generate_id
 
     @typing.no_type_check
     def __repr__(self) -> str:
@@ -39,11 +41,14 @@ class DB:
         """Store the current instance of the DB in a file"""
         self._dump_db_to_json(filename)
 
+    def set_id_generator(self, func: Callable[[], str]) -> None:
+        self._id_generator = func
+
     def add(self, data: Dict[str, Any]) -> str:
         """Add a value to the DB"""
 
         if self._verify_data(data):
-            _id = self._generate_id()
+            _id = str(self._id_generator())
             self._db[_id] = data
             return _id
         return "0"
@@ -56,7 +61,7 @@ class DB:
                 self._verify_data(d)
 
         for d in data:
-            self._db[self._generate_id()] = d
+            self._db[str(self._id_generator())] = d
 
     def get_by_id(self, _id: str) -> Union[None, Dict[str, Any]]:
         """Get the value from the DB based on the _id"""
@@ -84,6 +89,14 @@ class DB:
         data = self.get_by_id(_id)
         self.delete_by_id(_id)
         return data
+
+    def values(self, count: int = 5, last: bool = False) -> Dict[str, Dict[str, Any]]:
+        if not last:
+            keys = list(self._db)[:count]
+        else:
+            keys = list(self._db)[-count:]
+
+        return {i: self._db[i] for i in keys}
 
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
         """Update a value by it id"""
