@@ -333,9 +333,9 @@ for i in range(10):
     db.add({"name": f"name{i}", "age": i})
 
 print(db)
-print()
+
 print(db.values())  # get the  first 5 values
-print()
+
 print(db.values(count=3, last=True))  # get the last 3 values from the DB
 ```
 
@@ -389,3 +389,27 @@ print(db)
      '8': {'name': 'name7', 'age': 7},
      '9': {'name': 'name8', 'age': 8},
      '10': {'name': 'name9', 'age': 9}}
+
+## Check whether an id exists in the DB
+
+### Use `DB.id_exists(_id: str) -> bool:`
+
+```python
+from pysondb import DB
+
+db = DB(keys = ["name", "age"])
+
+id1 = db.add({"name": "ad", "age": 2})
+id2 = db.add({"name": "fred", "age": 3})
+
+print(db)
+
+print(db.id_exists(id1))
+print(db.id_exists("2324"))
+```
+
+    {'20395656516501272786': {'name': 'ad', 'age': 2},
+     '63225287964423034893': {'name': 'fred', 'age': 3}}
+
+    True
+    False
