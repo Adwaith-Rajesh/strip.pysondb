@@ -8,7 +8,7 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 
 ---
 
-## Features.
+## 🎉 Features.
 
 - No third party packages needed
 - No CLI
@@ -17,22 +17,23 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 - Just the code required to perform CRUD operation on JSON DB.
 - Users can generate custom id's for their data.
 
-## Note
+## ✏️️ Note
 
 Even though it's called a stripped-down version, there are some huge differences in the way this package works.
 
 - The data is not saved to file instantly, instead a methods needs to be called in order to do that.
 - The user is supposed to pass the keys / column name for the DB during initialization of the `DB` class.
 - Some of the new methods that are not derived from PysonDB are,
-  - `pop`
-  - `commit`
-  - `load`
-  - `values`
-  - `set_id_generator`
+  - [`pop`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#dbpop_id-str---dictstr-any--none)
+  - [`commit`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#saving-to-a-file)
+  - [`load`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#load-values-from-a-file)
+  - [`values`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#get-the-first-n-values-from-the-db)
+  - [`set_id_generator`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#using-a-custom-id-generator)
+  - [`id_exists`](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md#check-whether-an-id-exists-in-the-db)
 
 ---
 
-## Installation
+## 🔻 Installation
 
 - ### Delete the original pysondb before installing this version. (Might cause conflicts)
 
@@ -43,7 +44,7 @@ Even though it's called a stripped-down version, there are some huge differences
 
 ---
 
-## Usage
+## 📚 Usage
 
 - ## tl;dr
 
@@ -61,6 +62,25 @@ Even though it's called a stripped-down version, there are some huge differences
   ```
 
 ### Click [here](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/docs.md) to see the complete docs.
+
+---
+
+## 🥰 Contributing to strip.pysondb
+
+Read the **CONTRIBUTING.md** for the code design style and linting preferences.
+
+Once you've gone though follow theses steps.
+
+- Fork this repo.
+- Create a new branch from master. (Very important)
+- Make your required changes with good commit messages.
+- Write the test to make sure that your changes work.
+- Create a pull request.
+- Bug the maintainers until it get merged 😊.
+
+## 🙊 Have any issue or feature request.
+
+Create an issue or join our Discord server [Here](https://discord.gg/BxMbWzZe2Z).
 
 ---
 

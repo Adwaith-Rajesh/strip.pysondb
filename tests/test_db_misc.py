@@ -65,3 +65,11 @@ def test_db_len():
 
     db.add_many([{"name": f"name{i}"} for i in range(10)])
     assert len(db) == len(db._db) == 11
+
+
+def test_db_id_exists():
+    db = DB(keys=["name"])
+    id1 = db.add({"name": "test"})
+
+    assert db.id_exists(id1) is True
+    assert db.id_exists("3535345") is False
