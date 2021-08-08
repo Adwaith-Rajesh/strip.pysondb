@@ -17,7 +17,7 @@ class DB:
         # An in memory copy of the db
         self._db: Dict[str, Dict[str, Any]] = {}
         self._verify = verify_data
-        self._keys = keys
+        self._keys = sorted(keys)
 
     @typing.no_type_check
     def __repr__(self) -> str:
@@ -51,8 +51,9 @@ class DB:
     def add_many(self, data: List[Dict[str, Any]]) -> None:
         """Add more than one value to the DB at a time"""
 
-        for d in data:
-            self._verify_data(d)
+        if self._verify:
+            for d in data:
+                self._verify_data(d)
 
         for d in data:
             self._db[self._generate_id()] = d
@@ -130,10 +131,10 @@ class DB:
     ###############################################################################################
 
     def _generate_id(self) -> str:
-        _id = randint(int("1" "" * 19), int("9" * 20))
+        _id = randint(int("1" + "0" * 19), int("9" * 20))
 
-        while _id in self._db:
-            _id = randint(int("1" "" * 19), int("9" * 20))
+        while str(_id) in self._db:
+            _id = randint(int("1" + "0" * 19), int("9" * 20))
 
         return str(_id)
 
@@ -161,7 +162,7 @@ class DB:
          as provided in the keys list"""
 
         if self._verify:
-            if sorted(self._keys) == sorted(list(data)):
+            if self._keys == sorted(data.keys()):
                 return True
 
             else:
