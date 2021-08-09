@@ -320,6 +320,73 @@ print(db)
      '34033319050367693482': {'name': 'fred', 'age': 2, 'place': 'canada'},
      '95561529227556367819': {'name': 'dev', 'age': 1, 'place': 'texas'}}
 
+### If you try to load an external DB after you made any changes to the existing DB, it will raise a UserWarning.
+
+```python
+cat test.json
+```
+
+    {
+        "88331406345382409931": {
+            "name": "name0",
+            "age": 0
+        },
+        "19799026173623842332": {
+            "name": "name1",
+            "age": 1
+        },
+        "50728988172189920627": {
+            "name": "name2",
+            "age": 2
+        },
+        "35831344276580837554": {
+            "name": "name3",
+            "age": 3
+        },
+        "99843793274611962410": {
+            "name": "name4",
+            "age": 4
+        },
+        "58134770358361879398": {
+            "name": "name5",
+            "age": 5
+        }
+    }
+
+```python
+from pysondb import DB
+
+db = DB(keys=["name", "age"])
+db.add({"name": "test", "age": 1})  # A change is made to the DB
+
+db.load("test.json")
+print(db)
+```
+
+    test.py:6: UserWarning: You have un-committed data in your DB. This data will be lost during the loading of an external DB. If this is intentional use 'force=True'
+      db.load("test.json")
+
+    {'67627380838434154341': {'name': 'test', 'age': 1}}
+
+### You can prevent the warning by either using `force=True` or by committing the DB
+
+```python
+from pysondb import DB
+
+db = DB(keys=["name", "age"])
+db.add({"name": "test", "age": 1})  # A change is made to the DB
+
+db.load("test.json", force=True)  # Works just fine
+print(db)
+```
+
+    {'88331406345382409931': {'name': 'name0', 'age': 0},
+     '19799026173623842332': {'name': 'name1', 'age': 1},
+     '50728988172189920627': {'name': 'name2', 'age': 2},
+     '35831344276580837554': {'name': 'name3', 'age': 3},
+     '99843793274611962410': {'name': 'name4', 'age': 4},
+     '58134770358361879398': {'name': 'name5', 'age': 5}}
+
 ## Get the first 'n' values from the DB
 
 ### Use `DB.values(count: int = 5, last: bool = False) -> dict[str, dict[str, Any]]:`
