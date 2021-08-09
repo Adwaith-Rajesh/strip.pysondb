@@ -7,6 +7,7 @@ from typing import Any
 from typing import Callable
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Union
 
 
@@ -37,9 +38,9 @@ class DB:
         """Load an already existing DB"""
         self._load_json_db(filename)
 
-    def commit(self, filename: str) -> None:
+    def commit(self, filename: str, indent: Optional[int] = None) -> None:
         """Store the current instance of the DB in a file"""
-        self._dump_db_to_json(filename)
+        self._dump_db_to_json(filename, indent=indent)
 
     def set_id_generator(self, func: Callable[[], str]) -> None:
         self._id_generator = func
@@ -168,10 +169,10 @@ class DB:
             except json.decoder.JSONDecodeError:
                 self._db = {}
 
-    def _dump_db_to_json(self, filename: str) -> None:
+    def _dump_db_to_json(self, filename: str, indent: Optional[int] = None) -> None:
         """dump the current instance of the DB in a file"""
         with open(filename, "w") as f:
-            json.dump(self._db, f, indent=4)
+            json.dump(self._db, f, indent=indent)
 
     def _verify_data(self, data: Dict[str, Any]) -> bool:
         """verify whether the data provided has the same keys
