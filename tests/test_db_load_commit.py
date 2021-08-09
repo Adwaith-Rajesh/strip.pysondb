@@ -38,6 +38,42 @@ def test_db_load():
     assert db._db == DB_TEST_DATA
 
 
+@pytest.mark.usefixtures("gen_json_file")
+def test_load_warning():
+    db = DB(keys=["name", "age"])
+
+    db.add({"name": "test", "age": 1})
+
+    with pytest.warns(UserWarning):
+        db.load("strip.pysondb.json")
+
+
+@pytest.mark.usefixtures("gen_json_file")
+def test_load_warning_force():
+
+    db = DB(keys=["name", "age"])
+    db.add({"name": "test", "age": 1})
+
+    with pytest.warns(None):
+        db.load("strip.pysondb.json", force=True)
+
+    assert db._db == DB_TEST_DATA
+
+
+@pytest.mark.usefixtures("gen_json_file")
+def test_load_warning_after_commit():
+
+    db = DB(keys=["name", "age"])
+    db.add({"name": "test", "age": 1})
+
+    db.commit("strip.pysondb.json")
+
+    with pytest.warns(None):
+        db.load("strip.pysondb.json")
+
+    assert len(db._db) == 1
+
+
 @pytest.mark.usefixtures("rm_file")
 def test_db_commit():
     db = DB(keys=["name", "age"])
