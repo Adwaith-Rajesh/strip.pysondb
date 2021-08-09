@@ -1,5 +1,6 @@
 import json
 import typing
+import warnings
 from pathlib import Path
 from pprint import pformat
 from random import randint
@@ -22,6 +23,9 @@ class DB:
         self._keys = sorted(keys)
         self._id_generator = self._generate_id
 
+        # a flag to check whether any CRUD operation have been performed on the DB
+        self._db_updated: bool = False
+
     @typing.no_type_check
     def __repr__(self) -> str:
         """A pretty format of the DB"""
@@ -34,13 +38,21 @@ class DB:
         """Get the number of entries in the DB"""
         return len(self._db)
 
-    def load(self, filename: str) -> None:
+    def load(self, filename: str, force: bool = False) -> None:
         """Load an already existing DB"""
-        self._load_json_db(filename)
+        if not self._db_updated or force is True:
+            self._load_json_db(filename)
+            self._db_updated = False
+
+        else:
+            warnings.warn(UserWarning(
+                "You have un-committed data in your DB. This data will be lost during the "
+                "loading of an external DB. If this is intentional use 'force=True'"), stacklevel=2)
 
     def commit(self, filename: str, indent: Optional[int] = None) -> None:
         """Store the current instance of the DB in a file"""
         self._dump_db_to_json(filename, indent=indent)
+        self._db_updated = False
 
     def set_id_generator(self, func: Callable[[], str]) -> None:
         self._id_generator = func
@@ -54,6 +66,8 @@ class DB:
         if self._verify_data(data):
             _id = str(self._id_generator())
             self._db[_id] = data
+            self._db
+            self._db_updated = True
             return _id
         return "0"
 
@@ -66,6 +80,8 @@ class DB:
 
         for d in data:
             self._db[str(self._id_generator())] = d
+
+        self._db_updated = True
 
     def get_by_id(self, _id: str) -> Union[None, Dict[str, Any]]:
         """Get the value from the DB based on the _id"""
@@ -92,6 +108,7 @@ class DB:
 
         data = self.get_by_id(_id)
         self.delete_by_id(_id)
+        self._db_updated = True
         return data
 
     def values(self, count: int = 5, last: bool = False) -> Dict[str, Dict[str, Any]]:
@@ -108,6 +125,7 @@ class DB:
             if all(i in self._keys for i in data):
                 if _id in self._db:
                     self._db[_id].update(data)
+                    self._db_updated = True
             else:
                 raise KeyError(
                     "Some keys provided in the update data does not match the keys in the DB"
@@ -122,6 +140,7 @@ class DB:
                 )  # get the ids of all the values that need to updated
                 for i in ids:
                     self._db[i].update(new_data)
+                self._db_updated = True
                 return ids
 
             else:
@@ -134,16 +153,19 @@ class DB:
         """Delete values based in id"""
         if _id in self._db:
             del self._db[_id]
+            self._db_updated = True
 
     def delete_all(self) -> None:
         """Delete all the values from the DB"""
         self._db.clear()
+        self._db_updated = True
 
     def delete_by_query(self, query: Dict[str, Any]) -> List[str]:
         """Delete values based on a query"""
         _ids = list(self.get_by_query(query).keys())
         for _id in _ids:
             self.delete_by_id(_id)
+        self._db_updated = True
         return _ids
     ###############################################################################################
 
