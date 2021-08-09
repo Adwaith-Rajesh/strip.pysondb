@@ -265,7 +265,7 @@ print(db)
 
 ## Saving to a file
 
-### Use `DB.commit(filename: str) -> None:` to save the DB to a file
+### Use `DB.commit(filename: str, indent: Optional[int] = None) -> None:` to save the DB to a file
 
 ```python
 from pysondb import DB
@@ -278,7 +278,7 @@ db.add_many([
     {"name": "dev", "age": 1, "place": "texas"}
 ])
 
-db.commit("test.json")
+db.commit("test.json", indent=4)
 ```
 
 ```python
