@@ -16,7 +16,7 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 - Use of [python naming conventions](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names) in functions and classes.
 - Just the code required to perform CRUD operation on JSON DB.
 - Users can generate custom id's for their data.
-- DB clustering (User can access / modify multiple DB from a single point / class)
+- [DB clustering](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/cluster-docs.md) (User can access / modify multiple DB from a single point / class)
 
 ## ✏️️ Note
 
