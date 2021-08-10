@@ -16,6 +16,7 @@ A stripped-down version of [pysondb](https://github.com/fredysomy/pysonDB) by [F
 - Use of [python naming conventions](https://www.python.org/dev/peps/pep-0008/#function-and-variable-names) in functions and classes.
 - Just the code required to perform CRUD operation on JSON DB.
 - Users can generate custom id's for their data.
+- [DB clustering](https://github.com/Adwaith-Rajesh/strip.pysondb/blob/master/docs/cluster-docs.md) (User can access / modify multiple DB from a single point / class)
 
 ## ✏️️ Note
 
@@ -51,13 +52,28 @@ Even though it's called a stripped-down version, there are some huge differences
   ```python
   from pysondb import DB
 
-  db = DB(keys = ["name", "age"])
+  db = DB(keys=["name", "age"])
   db.add({
       "name": "name1",
       "age": 1
   })
 
   print(db)
+
+  ```
+
+  ```python
+
+  from pysondb import DB
+  from pysondb import Cluster
+
+  users = DB(keys=["username", "password"])
+  posts = DB(keys=["username", "title", "content"])
+
+  c = Cluster({"users": users, "posts": posts})
+  c.users.add({"username": "adwaith", "password": "123@45"})
+  c.posts.add("username": "adwaith", "title": "Hello", "content": "Hello WOrld")
+  c.commit("cluster.json", indent=2)  # use a single json file to store all the data from all the DB in the cluster
 
   ```
 
