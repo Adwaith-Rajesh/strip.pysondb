@@ -16,6 +16,9 @@ class Cluster:
         self._dbs: Dict[str, DB] = dbs
         self._verify_dbs()
 
+    def __repr__(self) -> str:
+        return f"A Cluster of {{ {', '.join(self._dbs)} }}"
+
     def __getattr__(self, k: str) -> Union[DB, None]:
         return self._dbs.get(k)
 
