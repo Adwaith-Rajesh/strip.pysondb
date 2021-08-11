@@ -1,5 +1,5 @@
 import json
-import typing
+import sys
 import warnings
 from pathlib import Path
 from pprint import pformat
@@ -14,7 +14,7 @@ from typing import Union
 
 class DB:
 
-    def __init__(self, keys: List[str], verify_data: bool = True) -> None:
+    def __init__(self, keys: List[str], verify_data: bool = True,  dynamic: bool = False) -> None:
         """Perform CRUD operations on a JSON DB"""
 
         # An in memory copy of the db
@@ -22,21 +22,25 @@ class DB:
         self._verify = verify_data
         self._keys = sorted(keys)
         self._id_generator = self._generate_id
+        self._d_loading = dynamic
 
         # a flag to check whether any CRUD operation have been performed on the DB
         self._db_updated: bool = False
 
-    @typing.no_type_check
     def __repr__(self) -> str:
         """A pretty format of the DB"""
-        try:
+        if sys.version_info >= (3, 8):
             return pformat(self._db, sort_dicts=False, width=80)
-        except TypeError:
+        else:
             return pformat(self._db)
 
     def __len__(self) -> int:
         """Get the number of entries in the DB"""
         return len(self._db)
+
+    @property
+    def keys(self) -> List[str]:
+        return self._keys
 
     def load(self, filename: str, force: bool = False) -> None:
         """Load an already existing DB"""
@@ -183,6 +187,14 @@ class DB:
             try:
                 with open(filename, "r") as f:
                     data = json.load(f)
+
+                    if self._d_loading:
+                        try:
+                            self._keys = sorted(list(data.values())[0].keys())
+                        except (IndexError, AttributeError):
+                            self._keys = self._keys
+                            return None
+
                     for val in data.values():
                         self._verify_data(val)
 
