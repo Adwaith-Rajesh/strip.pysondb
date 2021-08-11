@@ -73,3 +73,25 @@ def test_db_id_exists():
 
     assert db.id_exists(id1) is True
     assert db.id_exists("3535345") is False
+
+
+def test_db_keys_property():
+    db = DB(keys=["name", "age"])
+
+    assert db.keys == ["age", "name"]
+
+
+def test_db_print_above_3_7(capsys):
+
+    db = DB(keys=["name"])
+    db._db = {
+        "1": {"name": "ad"},
+        "2": {"name": "dev"},
+        "3": {"name": "fred"},
+        "4": {"name": "me"}
+    }
+
+    print(db)
+    out, err = capsys.readouterr()
+    assert out == "{'1': {'name': 'ad'},\n '2': {'name': 'dev'},\n '3': {'name': 'fred'},\n '4': {'name': 'me'}}\n"
+    assert err == ""

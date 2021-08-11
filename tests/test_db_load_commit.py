@@ -75,6 +75,55 @@ def test_load_warning_after_commit():
 
 
 @pytest.mark.usefixtures("rm_file")
+def test_load_json_decode_error():
+    with open("strip.pysondb.json", "w") as f:
+        f.write("{")
+
+    db = DB(keys=[])
+
+    try:
+        db.load("strip.pysondb.json")
+
+    except json.JSONDecodeError:
+        pytest.fail("Json decode error raised while loading")
+
+    assert db._db == {}
+
+
+@ pytest.mark.usefixtures("gen_json_file")
+def test_dynamic_loading():
+    db = DB(keys=[], dynamic=True)
+    db.load("strip.pysondb.json")
+
+    assert db.keys == ["age", "name"]
+    assert db._db == DB_TEST_DATA
+
+
+@ pytest.mark.usefixtures("rm_file")
+@ pytest.mark.parametrize(
+    "data, keys",
+    (
+        ({}, []),
+        ({"name": "test"}, []),
+        ({}, ["name", "age"]),
+        ({"name": "test"}, ["name", "age"])
+    )
+
+
+)
+def test_dynamic_loading_handle_error(data, keys):
+    with open("strip.pysondb.json", "w") as f:
+        json.dump(data, f)
+    db = DB(keys=keys, dynamic=True)
+    try:
+        db.load("strip.pysondb.json")
+    except (IndexError, AttributeError) as e:
+        pytest.fail(f"Error, raised in dynamic loading: {e}")
+
+    assert db.keys == sorted(keys)
+
+
+@ pytest.mark.usefixtures("rm_file")
 def test_db_commit():
     db = DB(keys=["name", "age"])
     db._db = DB_TEST_DATA
