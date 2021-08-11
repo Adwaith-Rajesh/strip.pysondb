@@ -72,3 +72,24 @@ print(c.followers)
 
     {'55612354709877511652': {'title': 'hello', 'content': 'Hello WOrld'}}
     None
+
+### Dynamic cluster loading
+
+This feature is useful if you have no idea about the data in a cluster
+
+```python
+from pysondb import Cluster
+
+c = Cluster(dbs={}, dynamic=True)
+c.load("user1.json")
+
+print(c.databases)
+print(c.posts)
+```
+
+    ['followers', 'posts']
+    {'71759298542570006049': {'title': 'hello', 'content': 'Hello WOrld'}}
+
+---
+
+<h1 align="center"> Have fun 🥰. </h1>
