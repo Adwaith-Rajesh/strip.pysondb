@@ -171,3 +171,25 @@ def test_cluster_crud():
             "name": "admin",
             "email": "ad@y.com"
         }}
+
+
+def test_cluster_print_single_db(capsys):
+    db = DB(keys=["test"])
+    c = Cluster({"db": db})
+    print(c)
+
+    out, err = capsys.readouterr()
+    assert out == "A Cluster of { db }\n"
+    assert err == ""
+
+
+def test_cluster_print_multiple_db(capsys):
+    users = DB(keys=["name", "email"])
+    posts = DB(keys=["by", "title", "content"])
+
+    c = Cluster({"users": users, "posts": posts})
+
+    print(c)
+    out, err = capsys.readouterr()
+    assert out == "A Cluster of { users, posts }\n"
+    assert err == ""
