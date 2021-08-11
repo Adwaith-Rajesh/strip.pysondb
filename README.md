@@ -85,7 +85,7 @@ Even though it's called a stripped-down version, there are some huge differences
 
 Read the **CONTRIBUTING.md** for the code design style and linting preferences.
 
-Once you've gone though follow theses steps.
+Once you've gone though it, follow theses steps.
 
 - Fork this repo.
 - Create a new branch from master. (Very important)
