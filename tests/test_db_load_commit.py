@@ -90,7 +90,7 @@ def test_load_json_decode_error():
     assert db._db == {}
 
 
-@ pytest.mark.usefixtures("gen_json_file")
+@pytest.mark.usefixtures("gen_json_file")
 def test_dynamic_loading():
     db = DB(keys=[], dynamic=True)
     db.load("strip.pysondb.json")
@@ -99,8 +99,8 @@ def test_dynamic_loading():
     assert db._db == DB_TEST_DATA
 
 
-@ pytest.mark.usefixtures("rm_file")
-@ pytest.mark.parametrize(
+@pytest.mark.usefixtures("rm_file")
+@pytest.mark.parametrize(
     "data, keys",
     (
         ({}, []),
@@ -123,7 +123,7 @@ def test_dynamic_loading_handle_error(data, keys):
     assert db.keys == sorted(keys)
 
 
-@ pytest.mark.usefixtures("rm_file")
+@pytest.mark.usefixtures("rm_file")
 def test_db_commit():
     db = DB(keys=["name", "age"])
     db._db = DB_TEST_DATA
@@ -132,3 +132,12 @@ def test_db_commit():
 
     with open("strip.pysondb.json", "r") as f:
         assert json.load(f) == DB_TEST_DATA
+
+
+@pytest.mark.usefixtures("gen_json_file")
+def test_db_dynamic_loading():
+    db = DB(keys=[], dynamic=True)
+    db.load("strip.pysondb.json")
+
+    assert db.keys == ["age", "name"]
+    assert db._db == DB_TEST_DATA
