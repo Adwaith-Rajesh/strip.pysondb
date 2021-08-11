@@ -40,7 +40,7 @@ class Cluster:
     @property
     def databases(self) -> List[str]:
         """Returns the names of all the DB's in the cluster"""
-        return list(self._dbs)
+        return sorted(list(self._dbs))
 
     def _verify_dbs(self) -> None:
 
