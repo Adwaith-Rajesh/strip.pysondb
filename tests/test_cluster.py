@@ -10,35 +10,41 @@ from pysondb.core import DB
 
 CLUSTER_TEST_DATA = {
     "users": {
-        "123456": {
-            "name": "test",
-            "email": "test@g.com"
-        },
-        "237648": {
-            "name": "ad",
-            "email": "ad@y.com"
-        },
-        "237380": {
-            "name": "fred",
-            "email": "fred@prox.com"
-        },
+        "keys": ["email", "name"],
+        "data": {
+            "123456": {
+                "name": "test",
+                        "email": "test@g.com"
+            },
+            "237648": {
+                "name": "ad",
+                        "email": "ad@y.com"
+            },
+            "237380": {
+                "name": "fred",
+                        "email": "fred@prox.com"
+            }
+        }
     },
     "posts": {
-        "267276": {
-            "by": "test",
-            "title": "hello",
-            "content": "hello World"
-        },
-        "263273": {
-            "by": "ad",
-            "title": "bye",
-            "content": "Bye World"
-        },
-        "227276": {
-            "by": "fred",
-            "title": "good",
-            "content": "good World"
-        },
+        "keys": ["by", "content", "title"],
+        "data": {
+            "267276": {
+                "by": "test",
+                "title": "hello",
+                "content": "hello World"
+            },
+            "263273": {
+                "by": "ad",
+                "title": "bye",
+                "content": "Bye World"
+            },
+            "227276": {
+                "by": "fred",
+                "title": "good",
+                "content": "good World"
+            }
+        }
     }
 }
 
@@ -100,8 +106,8 @@ def test_cluster_commit():
     users = DB(keys=["name", "email"])
     posts = DB(keys=["by", "title", "content"])
 
-    users._db = CLUSTER_TEST_DATA["users"]
-    posts._db = CLUSTER_TEST_DATA["posts"]
+    users._db = CLUSTER_TEST_DATA["users"]["data"]
+    posts._db = CLUSTER_TEST_DATA["posts"]["data"]
 
     c = Cluster({"users": users, "posts": posts})
     c.commit(CLUSTER_NAME)
@@ -119,8 +125,8 @@ def test_cluster_load():
     c = Cluster({"users": users, "posts": posts})
     c.load(CLUSTER_NAME)
 
-    assert c.users._db == CLUSTER_TEST_DATA["users"]
-    assert c.posts._db == CLUSTER_TEST_DATA["posts"]
+    assert c.users._db == CLUSTER_TEST_DATA["users"]["data"]
+    assert c.posts._db == CLUSTER_TEST_DATA["posts"]["data"]
 
 
 @pytest.mark.usefixtures("gen_cluster_data")
@@ -130,7 +136,7 @@ def test_cluster_load_selective():
     c = Cluster({"users": users})
     c.load(CLUSTER_NAME)
 
-    assert c.users._db == CLUSTER_TEST_DATA["users"]
+    assert c.users._db == CLUSTER_TEST_DATA["users"]["data"]
     assert c.posts is None
 
 
@@ -149,7 +155,7 @@ def test_cluster_crud():
     c = Cluster({"users": users})
     c.load(CLUSTER_NAME)
 
-    assert c.users._db == CLUSTER_TEST_DATA["users"]
+    assert c.users._db == CLUSTER_TEST_DATA["users"]["data"]
     c.users.get_by_id("123456") == {
         "name": "test",
         "email": "test@g.com"
@@ -171,3 +177,52 @@ def test_cluster_crud():
             "name": "admin",
             "email": "ad@y.com"
         }}
+
+
+def test_cluster_print_single_db(capsys):
+    db = DB(keys=["test"])
+    c = Cluster({"db": db})
+    print(c)
+
+    out, err = capsys.readouterr()
+    assert out == "A Cluster of { db }\n"
+    assert err == ""
+
+
+def test_cluster_print_multiple_db(capsys):
+    users = DB(keys=["name", "email"])
+    posts = DB(keys=["by", "title", "content"])
+
+    c = Cluster({"users": users, "posts": posts})
+
+    print(c)
+    out, err = capsys.readouterr()
+    assert out == "A Cluster of { users, posts }\n"
+    assert err == ""
+
+
+def test_cluster_databases_property():
+    c = Cluster({"users": DB(keys=[]), "posts": DB(keys=[])})
+    assert c.databases == ["posts", "users"]
+
+
+@pytest.mark.usefixtures("gen_cluster_data")
+def test_cluster_load_dynamic():
+    c = Cluster(dbs={}, dynamic=True)
+
+    c.load(CLUSTER_NAME)
+    assert c._d_loading is True
+    assert c.databases == ["posts", "users"]
+    assert c.posts._db == CLUSTER_TEST_DATA["posts"]["data"]
+    assert c.users._db == CLUSTER_TEST_DATA["users"]["data"]
+
+
+@pytest.mark.usefixtures("rm_file")
+def test_cluster_load_json_decode_warning():
+    with open(CLUSTER_NAME, "w") as f:
+        f.write("{")
+
+    c = Cluster(dbs={}, dynamic=True)
+
+    with pytest.warns(UserWarning):
+        c.load(CLUSTER_NAME)
