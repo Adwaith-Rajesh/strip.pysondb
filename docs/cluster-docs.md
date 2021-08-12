@@ -90,6 +90,51 @@ print(c.posts)
     ['followers', 'posts']
     {'71759298542570006049': {'title': 'hello', 'content': 'Hello WOrld'}}
 
+### Adding and deleting DB in a dynamic cluster
+
+#### - Adding
+
+```python
+from pysondb import Cluster
+
+c = Cluster(dbs={}, dynamic=True)
+c.add_db("test", DB(keys=["val"]))
+
+print(c.databases)
+print(c.test.keys)
+
+c.test.add({"val": 1})
+print(c.test)
+c.commit("cluster_test.json")
+```
+
+    ['test']
+    ['val']
+    {'70842974731938962020': {'val': 1}}
+
+```python
+cat cluster_test.json
+```
+
+    {"test": {"keys": ["val"], "data": {"70842974731938962020": {"val": 1}}}}
+
+#### - Deleting
+
+```python
+from pysondb import Cluster
+
+c = Cluster(dbs={}, dynamic=True)
+c.load("cluster_test.json")
+
+print(c.databases)
+c.delete_db("test")
+print(c.databases)
+
+```
+
+    ['test']
+    []
+
 ---
 
 <h1 align="center"> Have fun 🥰. </h1>

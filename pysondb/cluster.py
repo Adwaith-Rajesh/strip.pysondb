@@ -54,6 +54,29 @@ class Cluster:
             else:
                 raise ValueError("Cluster intialized with empty DB data")
 
+    def add_db(self, db_name: str, db: DB) -> None:
+        if not isinstance(db, DB):
+            raise ValueError("`db` must be a instance of 'DB'")
+
+        if not isinstance(db_name, str):
+            raise ValueError("`db_name` must be a instance of 'str'")
+
+        if self._d_loading:
+            self._dbs[db_name] = db
+
+        else:
+            warnings.warn(UserWarning(
+                "Cannot add db to a cluster that is not dynamic"))
+
+    def delete_db(self, db_name: str) -> None:
+        if self._d_loading:
+            if db_name in self._dbs:
+                del self._dbs[db_name]
+
+        else:
+            warnings.warn(UserWarning(
+                "Cannot delete delete a db from a cluster that is not dynamic"))
+
     def commit(self, filename: str, indent: Optional[int] = None) -> None:
         """commmit all the data from all the db to a single file"""
         data: ClusterDataType = {}
