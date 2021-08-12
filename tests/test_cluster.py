@@ -226,3 +226,49 @@ def test_cluster_load_json_decode_warning():
 
     with pytest.warns(UserWarning):
         c.load(CLUSTER_NAME)
+
+
+def test_cluster_add_db():
+    c = Cluster(dbs={}, dynamic=True)
+
+    assert c.databases == []
+    c.add_db("test", DB(keys=["test"]))
+    assert c.databases == ['test']
+    assert c.test.keys == ["test"]
+
+
+def test_cluster_add_db_warning():
+    c = Cluster(dbs={"test": DB(keys=["test"])})
+
+    with pytest.warns(UserWarning):
+        c.add_db("test", DB(keys=[]))
+
+
+@pytest.mark.parametrize(
+    "k,v",
+    (
+        (1, "d"),
+        (2, 3),
+        ("Str", 4)
+    )
+)
+def test_cluster_value_error(k, v):
+    c = Cluster(dbs={}, dynamic=True)
+
+    with pytest.raises(ValueError):
+        c.add_db(k, v)
+
+
+def test_cluster_delete_db():
+    c = Cluster(dbs={"test": DB(keys=["test"])}, dynamic=True)
+
+    assert c.databases == ["test"]
+    c.delete_db("test")
+    assert c.databases == []
+
+
+def test_cluster_delete_db_warning():
+    c = Cluster(dbs={"test": DB(keys=["test"])})
+
+    with pytest.warns(UserWarning):
+        c.delete_db("test")
