@@ -1,6 +1,7 @@
 import json
 import sys
 import warnings
+from copy import deepcopy
 from pathlib import Path
 from pprint import pformat
 from random import randint
@@ -91,21 +92,21 @@ class DB:
         """Get the value from the DB based on the _id"""
         _id = str(_id)
         if _id in self._db:
-            return self._db[_id]
+            return deepcopy(self._db[_id])
 
         return None
 
     def get_by_query(self, query: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         """Get the values from the DB based on the query conditions"""
-        return {
+        return deepcopy({
             i: x
             for i, x in self._db.items()
             if all(k in x and x[k] == v for k, v in query.items())
-        }
+        })
 
     def get_all(self) -> Dict[str, Dict[str, Any]]:
         """Returns the entire DB"""
-        return self._db.copy()
+        return deepcopy(self._db)
 
     def pop(self, _id: str) -> Union[None, Dict[str, Any]]:
         """Remove and return item of the specified id"""
@@ -121,7 +122,7 @@ class DB:
         else:
             keys = list(self._db)[-count:]
 
-        return {i: self._db[i] for i in keys}
+        return deepcopy({i: self._db[i] for i in keys})
 
     def update_by_id(self, _id: str, data: Dict[str, Any]) -> None:
         """Update a value by it id"""
