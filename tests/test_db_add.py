@@ -88,3 +88,24 @@ def test_db_add_many_no_verify(test_input):
 
     except KeyError:
         pytest.fail("KeyError was raised in db.add_many, no verify")
+
+
+def test_db_add_empty_data():
+    db = DB(keys=["name"])
+    a = db.add({})
+
+    assert db._db == {}
+    assert a == "0"
+
+
+def test_add_many_empty_data():
+    db = DB(keys=["name"])
+    db.add_many(
+        [
+            {"name": "test"},
+            {}
+        ]
+    )
+
+    assert len(db._db) == 1
+    assert list(db._db.values()) == [{"name": "test"}]

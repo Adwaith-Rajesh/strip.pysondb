@@ -67,7 +67,6 @@ class DB:
 
     def add(self, data: Dict[str, Any]) -> str:
         """Add a value to the DB"""
-
         if self._verify_data(data):
             _id = str(self._id_generator())
             self._db[_id] = data
@@ -84,7 +83,8 @@ class DB:
                 self._verify_data(d)
 
         for d in data:
-            self._db[str(self._id_generator())] = d
+            if d:
+                self._db[str(self._id_generator())] = d
 
         self._db_updated = True
 
@@ -241,6 +241,9 @@ class DB:
     def _verify_data(self, data: Dict[str, Any]) -> bool:
         """verify whether the data provided has the same keys
          as provided in the keys list"""
+
+        if not data:
+            return False
 
         if self._verify:
             if self._keys == sorted(data.keys()):
