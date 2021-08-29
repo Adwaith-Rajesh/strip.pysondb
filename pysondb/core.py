@@ -172,6 +172,35 @@ class DB:
             self.delete_by_id(_id)
         self._db_updated = True
         return _ids
+
+    def merge(self, db: "DB", override: bool = True, inplace: bool = False) -> Union["DB", None]:
+        """Merges two DB with the same keys together"""
+
+        if not isinstance(db, type(self)):
+            raise TypeError(
+                f"'db' must be of type 'DB' and not {type(db).__name__!r}")
+
+        if self._keys != db._keys:
+            raise KeyError("Both the DB's must have the same 'keys'")
+
+        # verify that the id's in the DB to merged does not exists in the current DB
+        if not override:
+            if not all(i not in self._db for i in db._db):
+                raise KeyError(
+                    "Some ids in the DB to be merged exists in the current DB.")
+
+        new_db = {**self._db, **db._db}
+
+        if inplace:
+            self._db = deepcopy(new_db)
+
+        else:
+            db = DB(keys=self._keys.copy())
+            db._db = deepcopy(new_db)
+            return db
+
+        return None
+
     ###############################################################################################
 
     def _generate_id(self) -> str:
